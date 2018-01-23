@@ -55,7 +55,7 @@
         
 5. 其他
     
-    其他信息，如map类型、嵌套、引用其他proto文件定义，见[官方教程](https://developers.google.com/protocol-buffers/docs/proto3)。
+    其他消息类型，如map类型、嵌套、引用其他proto文件定义，见[官方教程](https://developers.google.com/protocol-buffers/docs/proto3)。
     
 ## API
 
@@ -86,7 +86,7 @@
 
 1. `io.grpc.stub.AbstractStub`
     
-    用于调用服务端提提供的方法，由proto根据service定义生成其实现类
+    用于调用服务端提供的服务方法，由proto根据service定义生成其实现类
     
 2. `io.grpc.netty.NettyChannelBuilder`
     
