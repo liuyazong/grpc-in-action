@@ -1,0 +1,38 @@
+<configuration scan="true" scanPeriod="300 seconds" debug="false">
+
+    <property name="log_path" value="."/>
+    <property name="app" value="grpc-in-action"/>
+    <property name="pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%boldBlue(%thread)] %boldYellow(%5level) %boldGreen(%logger{15}#%line) - %m%n"/>
+    <contextName>${app}</contextName>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log_path}/${app}.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app}.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="io.netty" level="ERROR"/>
+    <logger name="io.grpc" level="ERROR"/>
+
+    <logger name="yz" level="DEBUG"/>
+
+    <root level="DEBUG">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

@@ -1,0 +1,41 @@
+syntax = "proto3"; //使用proto 3的语法
+
+option java_multiple_files = true; //是否为每个message生成单独的java文件
+option java_package = "yz.grpc.proto.service.compute"; //生成文件的包名
+option java_outer_classname = "ComputeServiceProto";
+
+package yz.grpc.proto.service.compute;
+
+//服务定义
+service ComputeService {
+    //Unary RPC。客户端发送一个请求，获得一个响应，一对一
+    rpc add (InputMessage) returns (OutputMessage) {
+
+    }
+
+    //Client-side streaming RPC。客户端写消息序列到流，通过流把消息发送到服务端，发送完成后等待服务器端读取这些消息并返回结果
+    rpc subtract (stream InputMessage) returns (OutputMessage) {
+
+    }
+
+    //Server-side streaming RPC。客户端发送一个请求，获得一个流，客户端从流中读取响应消息序列直到读取完
+    rpc multiply (InputMessage) returns (stream OutputMessage) {
+
+    }
+
+    //Bidirectional streaming RPC。客户端和服务端都可以通过读写流来发送消息序列，客户端和服务端读写的顺序是任意的
+    rpc divide (stream InputMessage) returns (stream OutputMessage) {
+
+    }
+}
+
+//参数定义
+message InputMessage {
+    double numA = 1;
+    double numB = 2;
+}
+
+//参数定义
+message OutputMessage {
+    double result = 1;
+}
