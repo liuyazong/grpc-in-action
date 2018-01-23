@@ -1,4 +1,3 @@
-# grpc in action
 
 ## 消息及服务定义
 
@@ -58,10 +57,6 @@
     
     其他信息，如map类型、嵌套、引用其他proto文件定义，见[官方教程](https://developers.google.com/protocol-buffers/docs/proto3)。
     
-## grpc官方教程
-
-[官方教程](https://grpc.io/docs/tutorials/basic/java.html)。
-
 ## API
 
 ### 服务端
@@ -96,3 +91,7 @@
 2. `io.grpc.netty.NettyChannelBuilder`
     
     提供一系列静态方法用于构建`io.grpc.ManagedChannel`实例
+    
+## Grpc官方文档
+
+[官方教程](https://grpc.io/docs/tutorials/basic/java.html)。
