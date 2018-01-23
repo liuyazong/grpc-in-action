@@ -80,7 +80,7 @@
 
 5. `io.grpc.ClientInterceptor`
 
-    客户端拦截器，在客户端发送请求或接收响应时做一些工作，如认证、日志、Request和response的重写
+    客户端拦截器，在客户端发送请求或接收响应时做一些工作，如认证、日志、request/response重写
 
 ### 客户端
 
