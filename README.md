@@ -94,4 +94,4 @@
     
 ## Grpc官方文档
 
-[官方教程](https://grpc.io/docs/tutorials/basic/java.html)。
+[官方教程](https://grpc.io/docs/tutorials/basic/java.html)
