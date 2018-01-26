@@ -1,3 +1,4 @@
+# GRpc实战及原理分析
 
 ## 消息及服务定义
 
@@ -59,7 +60,7 @@
     
 ## API
 
-### 服务端
+### 服务端API
 
 1. `io.grpc.Server`
 
@@ -78,11 +79,7 @@
     
     服务端拦截器，在处理请求之前或之后做一些工作，如认证、日志、将请求转发到其他server
 
-5. `io.grpc.ClientInterceptor`
-
-    客户端拦截器，在客户端发送请求或接收响应时做一些工作，如认证、日志、request/response重写
-
-### 客户端
+### 客户端API
 
 1. `io.grpc.stub.AbstractStub`
     
@@ -91,7 +88,13 @@
 2. `io.grpc.netty.NettyChannelBuilder`
     
     提供一系列静态方法用于构建`io.grpc.ManagedChannel`实例
-    
-## Grpc官方文档
+
+3. `io.grpc.ClientInterceptor`
+
+    客户端拦截器，在客户端发送请求或接收响应时做一些工作，如认证、日志、request/response重写
+
+## 原理分析
+
+## GRpc官方文档
 
 [官方教程](https://grpc.io/docs/tutorials/basic/java.html)

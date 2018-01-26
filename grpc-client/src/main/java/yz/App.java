@@ -8,12 +8,6 @@ import yz.grpc.proto.service.compute.ComputeServiceGrpc;
 import yz.grpc.proto.service.compute.InputMessage;
 import yz.grpc.proto.service.compute.OutputMessage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 
 @Slf4j
 public class App {
@@ -100,26 +94,6 @@ public class App {
             OutputMessage value = computeServiceFutureStub.add(inputMessage).get();//对返回结果value做处理
         }
 
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
-        List<Future<Integer>> futures = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            StubFactory stubFactory = StubFactory.instance();
-            Future<Integer> future = executorService.submit(() -> {
-                stubFactory.stub(ComputeServiceGrpc.ComputeServiceBlockingStub.class);
-                stubFactory.stub(ComputeServiceGrpc.ComputeServiceStub.class);
-                stubFactory.stub(ComputeServiceGrpc.ComputeServiceFutureStub.class);
-                return 1;
-            });
-            futures.add(future);
-        }
-        futures.forEach(f -> {
-            try {
-                System.err.println(f.get());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        System.err.println(futures.size());
-        executorService.shutdown();
+        Thread.currentThread().join();
     }
 }

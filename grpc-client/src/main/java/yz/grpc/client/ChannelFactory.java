@@ -4,8 +4,6 @@ import io.grpc.ManagedChannel;
 import io.grpc.netty.NegotiationType;
 import io.grpc.netty.NettyChannelBuilder;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
@@ -17,11 +15,21 @@ public class ChannelFactory extends BaseKeyedPooledObjectFactory<ObjectKey, Mana
     public ManagedChannel create(ObjectKey key) throws Exception {
         ManagedChannel managedChannel = NettyChannelBuilder
                 .forAddress(key.getAddress())
-                .channelType(NioSocketChannel.class)
-                .eventLoopGroup(new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() << 1))
+
+                /*默认为NioSocketChannel.class*/
+                //.channelType(NioSocketChannel.class)
+
+                /*默认nThreads=1， 并且将DefaultThreadFactory的daemon属性为true，即其所产生的线程都是daemon线程。
+                使用默认设置时，伴随启动类线程退出netty请求线程也退出，会导致用户请求还未获得响应甚至请求还未发送到服端时。
+                因此需要用户对客户端启动类进行阻塞以防止上述情况的发生。只要保证jvm不退出，此问题可忽略，如程序在tomcat等容器内运行。*/
+                //.eventLoopGroup(new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() << 1))
+
+                .directExecutor()
                 .withOption(ChannelOption.SO_KEEPALIVE, true)
                 .withOption(ChannelOption.TCP_NODELAY, true)
                 .negotiationType(NegotiationType.PLAINTEXT)
+
+                //客户端interceptor，简单打印请求、响应日志
                 .intercept(new LoggingInterceptor())
                 .build();
         log.debug("create channel key: {}, channel: {}", key, managedChannel);
