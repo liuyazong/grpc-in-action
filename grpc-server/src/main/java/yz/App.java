@@ -2,7 +2,6 @@ package yz;
 
 import io.grpc.Server;
 import io.grpc.netty.NettyServerBuilder;
-import io.grpc.util.TransmitStatusRuntimeExceptionInterceptor;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -21,14 +20,14 @@ public class App {
         NettyServerBuilder builder = NettyServerBuilder.forAddress(new InetSocketAddress("127.0.0.1", 2018))
                 .channelType(NioServerSocketChannel.class)
                 .bossEventLoopGroup(new NioEventLoopGroup(1))
-                .workerEventLoopGroup(new NioEventLoopGroup(Runtime.getRuntime().availableProcessors()))
-                .withChildOption(ChannelOption.SO_KEEPALIVE, true)
-                .withChildOption(ChannelOption.SO_BACKLOG, 1024)
+                .workerEventLoopGroup(new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() << 1))
+                //如果channelType为NioServerSocketChannel，自动设置SO_KEEPALIVE=true、SO_BACKLOG=128自动配置，且不可更改
+                //.withChildOption(ChannelOption.SO_KEEPALIVE, true)
+                //.withChildOption(ChannelOption.SO_BACKLOG, 256)
                 .withChildOption(ChannelOption.TCP_NODELAY, true);
 
         builder = builder.addService(new ComputeService());
-        builder = builder.intercept(TransmitStatusRuntimeExceptionInterceptor.instance())
-                .intercept(new LoggingInterceptor());
+        builder = builder.intercept(new LoggingInterceptor());
 
         Server server = builder
                 .build()
