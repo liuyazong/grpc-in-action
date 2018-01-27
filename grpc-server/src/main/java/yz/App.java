@@ -3,6 +3,8 @@ package yz;
 import io.grpc.Server;
 import io.grpc.netty.NettyServerBuilder;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import yz.grpc.server.LoggingInterceptor;
 import yz.grpc.service.impl.ComputeService;
@@ -27,8 +29,9 @@ public class App {
                 默认情况下，boss group的nThread = 1，worker group的nThreads = cpu核心数<<1。并且两者都将DefaultThreadFactory的daemon属性为true，即其所产生的线程都是daemon线程。
                 使用默认设置时，伴随启动类线程执行完毕，netty内线程也会退出，从而致使server并不能对外提供服务。
                 因此需要用户对服务端启动类进行阻塞以防止上述情况的发生。只要保证jvm不退出，此问题可忽略，如程序在tomcat等容器内运行。*/
-                //.bossEventLoopGroup(new NioEventLoopGroup(1))
-                //.workerEventLoopGroup(new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() << 1))
+                /*创建自定义的NioEventLoopGroup*/
+                .bossEventLoopGroup(new NioEventLoopGroup(1, new DefaultThreadFactory("grpc-boss-group")))
+                .workerEventLoopGroup(new NioEventLoopGroup(Runtime.getRuntime().availableProcessors() << 1, new DefaultThreadFactory("grpc-worker-group")))
 
                 /*如果channelType为NioServerSocketChannel.class或者其子类的class，自动设置SO_KEEPALIVE=true、SO_BACKLOG=128自动配置，且不可更改*/
                 //.withChildOption(ChannelOption.SO_KEEPALIVE, true)
@@ -53,6 +56,5 @@ public class App {
             service.getMethods().forEach(method -> log.debug("method: {}", method.getMethodDescriptor().getFullMethodName()));
         });
 
-        Thread.currentThread().join();
     }
 }

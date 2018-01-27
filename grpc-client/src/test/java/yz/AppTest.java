@@ -16,18 +16,31 @@ import java.util.concurrent.ExecutionException;
 @Test
 public class AppTest {
 
-    private InputMessage inputMessage = InputMessage.newBuilder().setNumA(2).setNumB(3).build();
+    private InputMessage inputMessage;
+    private ComputeServiceGrpc.ComputeServiceBlockingStub computeServiceBlockingStub;
+    private ComputeServiceGrpc.ComputeServiceStub computeServiceStub;
+    private ComputeServiceGrpc.ComputeServiceFutureStub computeServiceFutureStub;
 
+    @Test(priority = 1)
+    public void warm() {
+        inputMessage = InputMessage.newBuilder().setNumA(2).setNumB(3).build();
+        computeServiceBlockingStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceBlockingStub.class);//ComputeServiceGrpc.newBlockingStub(managedChannel);
+        computeServiceStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceStub.class);//ComputeServiceGrpc.newStub(managedChannel);
+        computeServiceFutureStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceFutureStub.class);// ComputeServiceGrpc.newFutureStub(managedChannel);
+    }
+
+    @Test(priority = 6)
     public void blockCall() {
-        ComputeServiceGrpc.ComputeServiceBlockingStub computeServiceBlockingStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceBlockingStub.class);//ComputeServiceGrpc.newBlockingStub(managedChannel);
+        //ComputeServiceGrpc.ComputeServiceBlockingStub computeServiceBlockingStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceBlockingStub.class);//ComputeServiceGrpc.newBlockingStub(managedChannel);
         OutputMessage value = computeServiceBlockingStub.add(inputMessage);
         //对返回结果value做处理
         log.debug("blocking call --->>> add: {}", value);
     }
 
+    @Test(priority = 2)
     public void asyncUnaryCall() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        ComputeServiceGrpc.ComputeServiceStub computeServiceStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceStub.class);//ComputeServiceGrpc.newStub(managedChannel);
+        //ComputeServiceGrpc.ComputeServiceStub computeServiceStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceStub.class);//ComputeServiceGrpc.newStub(managedChannel);
         computeServiceStub.add(inputMessage, new StreamObserver<OutputMessage>() {
             @Override
             public void onNext(OutputMessage value) {
@@ -47,9 +60,10 @@ public class AppTest {
         latch.await();
     }
 
+    @Test(priority = 3)
     public void asyncClientStreamingCall() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        ComputeServiceGrpc.ComputeServiceStub computeServiceStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceStub.class);//ComputeServiceGrpc.newStub(managedChannel);
+        //ComputeServiceGrpc.ComputeServiceStub computeServiceStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceStub.class);//ComputeServiceGrpc.newStub(managedChannel);
         StreamObserver<InputMessage> subtract = computeServiceStub.subtract(new StreamObserver<OutputMessage>() {
             @Override
             public void onNext(OutputMessage value) {
@@ -71,9 +85,10 @@ public class AppTest {
         latch.await();
     }
 
+    @Test(priority = 4)
     public void asyncServerStreamingCall() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        ComputeServiceGrpc.ComputeServiceStub computeServiceStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceStub.class);//ComputeServiceGrpc.newStub(managedChannel);
+        //ComputeServiceGrpc.ComputeServiceStub computeServiceStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceStub.class);//ComputeServiceGrpc.newStub(managedChannel);
         computeServiceStub.multiply(inputMessage, new StreamObserver<OutputMessage>() {
             @Override
             public void onNext(OutputMessage value) {
@@ -93,9 +108,10 @@ public class AppTest {
         latch.await();
     }
 
+    @Test(priority = 5)
     public void asyncBidiStreamingCall() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
-        ComputeServiceGrpc.ComputeServiceStub computeServiceStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceStub.class);//ComputeServiceGrpc.newStub(managedChannel);
+        //ComputeServiceGrpc.ComputeServiceStub computeServiceStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceStub.class);//ComputeServiceGrpc.newStub(managedChannel);
         StreamObserver<InputMessage> divide = computeServiceStub.divide(new StreamObserver<OutputMessage>() {
             @Override
             public void onNext(OutputMessage value) {
@@ -117,8 +133,9 @@ public class AppTest {
         latch.await();
     }
 
+    @Test(priority = 7)
     public void futureUnaryCall() throws ExecutionException, InterruptedException {
-        ComputeServiceGrpc.ComputeServiceFutureStub computeServiceFutureStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceFutureStub.class);// ComputeServiceGrpc.newFutureStub(managedChannel);
+        //ComputeServiceGrpc.ComputeServiceFutureStub computeServiceFutureStub = StubFactory.instance().stub(ComputeServiceGrpc.ComputeServiceFutureStub.class);// ComputeServiceGrpc.newFutureStub(managedChannel);
         ListenableFuture<OutputMessage> future = computeServiceFutureStub.add(inputMessage);
         log.debug("future unary call --->>> future: {}", future);
         OutputMessage value = future.get();
