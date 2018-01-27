@@ -98,7 +98,7 @@
 
 1. server端在使用`io.grpc.netty.NettyServerBuilder`构建`io.grpc.Server`实例时，通过调用`addService(BindableService bindableService);`方法将`service`实例解析为`io.grpc.ServerServiceDefinition`对象，最终以`ServerServiceDefinition.getServiceDescriptor().getName()`为key，以`io.grpc.ServerServiceDefinition`实例为value存储在`io.grpc.internal.InternalHandlerRegistry.Builder`属性内的`java.util.LinkedHashMap`实例中。
 
-2. 接下来调用`io.grpc.netty.NettyServerBuilder`的`build`方法，该方法调用构造器`ServerImpl(AbstractServerImplBuilder<?> builder,InternalServer transportServer,Context rootContext)`返回`io.grpc.Server`实例。该构造函数调用`builder`参数的build方法将`java.util.LinkedHashMap`中方key、value封装为`io.grpc.internal.InternalHandlerRegistry`实例并赋值给`io.grpc.internal.ServerImpl`的`io.grpc.internal.InternalHandlerRegistry`属性。参数`transportServer`由`io.grpc.netty.NettyServerBuilder`的`io.grpc.netty.NettyServerBuilder.buildTransportServer`方法构建，实际上它是一个`io.grpc.netty.NettyServer`的实例。
+2. 接下来调用`io.grpc.netty.NettyServerBuilder`的`build`方法，该方法调用构造器`ServerImpl(AbstractServerImplBuilder<?> builder,InternalServer transportServer,Context rootContext)`返回`io.grpc.Server`实例。该构造函数调用`builder`参数的`build`方法将`java.util.LinkedHashMap`中方key、value封装为`io.grpc.internal.InternalHandlerRegistry`实例并赋值给`io.grpc.internal.ServerImpl`的`io.grpc.internal.InternalHandlerRegistry`属性。参数`transportServer`由`io.grpc.netty.NettyServerBuilder`的`io.grpc.netty.NettyServerBuilder.buildTransportServer`方法构建，实际上它是一个`io.grpc.netty.NettyServer`的实例。
 
 3. 接下来看`io.grpc.internal.ServerImpl`的`start`方法，其内部调用了`io.grpc.netty.NettyServer`的`start`方法，这里才开始netty server的配置及启动。这里中点关注`io.netty.bootstrap.ServerBootstrap.childHandler(io.netty.channel.ChannelHandler)`方法，在`io.grpc.netty.NettyServerTransport`的`start`方法内对`io.grpc.netty.NettyServerHandler`进行实例化并把该实例添加到netty的channel链中。
 
@@ -112,7 +112,7 @@
 
 1. 客户端writeHeaders
 
-从stub的远程方法调用入口跟进去，会发现，实际调用的是`io.grpc.stub.ClientCalls`的几个共有静态方法。在调用这些方法时，stub首先会把方法相关的返回值类型、入参类型、方法全名(service全名+"／"+方法名)封装为`io.grpc.MethodDescriptor`实例。然后会构造`io.grpc.internal.ClientCallImpl`实例并调用其`start`方法，在这个方法内构造了io.grpc.netty.NettyClientStream实例并调用其start方法，这里就到了writeHeaders的地方：以:path为key、以"/"+方法全名为值写入`io.netty.handler.codec.http2.Http2Headers`实例中。
+从stub的远程方法调用入口跟进去，会发现，实际调用的是`io.grpc.stub.ClientCalls`的几个共有静态方法。在调用这些方法时，stub首先会把方法相关的返回值类型、入参类型、方法全名(`service全名+／+方法名`)封装为`io.grpc.MethodDescriptor`实例。然后会构造`io.grpc.internal.ClientCallImpl`实例并调用其`start`方法，在这个方法内构造了`io.grpc.netty.NettyClientStream`实例并调用其`start`方法，这里就到了writeHeaders的地方：以`:path`为key、以`/+方法全名`为value写入`io.netty.handler.codec.http2.Http2Headers`实例中。
 
 2. 服务端onHeadersRead
 
