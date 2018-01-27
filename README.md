@@ -116,7 +116,7 @@
 
 2. 服务端onHeadersRead
 
-    服务端在读取完客户端请求头后会调用`io.grpc.netty.NettyServerHandler`的`onHeadersRead`方法。该方法从请求头中取出path值，然后调用`io.grpc.internal.InternalHandlerRegistry`(`io.grpc.internal.ServerImpl`实例的一个属性，服务端启动时已初始化并把service信息放入其中)的lookupMethod方法更具path值找到对应的处理方法。
+    服务端在读取完客户端请求头后会调用`io.grpc.netty.NettyServerHandler`的`onHeadersRead`方法。该方法从请求头中取出path值，然后调用`io.grpc.internal.InternalHandlerRegistry`(`io.grpc.internal.ServerImpl`实例的一个属性，服务端启动时已初始化并把service信息放入其中)的`lookupMethod`方法更具path值找到对应的处理方法。
 
 ### 整体流程
 
