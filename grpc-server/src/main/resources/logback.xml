@@ -26,9 +26,9 @@
     </appender>
 
     <logger name="io.netty" level="ERROR"/>
-    <logger name="io.grpc" level="DEBUG"/>
+    <logger name="io.grpc" level="ERROR"/>
 
-    <logger name="yz" level="DEBUG"/>
+    <logger name="yz.grpc.server" level="DEBUG"/>
 
     <root level="DEBUG">
         <appender-ref ref="FILE"/>
