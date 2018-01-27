@@ -112,7 +112,7 @@
 
 1. 客户端writeHeaders
 
-从stub的远程方法调用入口跟进去，会发现，实际调用的是`io.grpc.stub.ClientCalls`的几个共有静态方法。在调用这些方法时，stub首先会把方法相关的返回值类型、入参类型、方法全名(`service全名+／+方法名`)封装为`io.grpc.MethodDescriptor`实例。然后会构造`io.grpc.internal.ClientCallImpl`实例并调用其`start`方法，在这个方法内构造了`io.grpc.netty.NettyClientStream`实例并调用其`start`方法，这里就到了writeHeaders的地方：以`:path`为key、以`/+方法全名`为value写入`io.netty.handler.codec.http2.Http2Headers`实例中。
+从stub的远程方法调用入口跟进去，会发现，实际调用的是`io.grpc.stub.ClientCalls`的几个公有静态方法。在调用这些方法时，stub首先会把方法相关的返回值类型、入参类型、方法全名(`service全名+／+方法名`)封装为`io.grpc.MethodDescriptor`实例。然后会构造`io.grpc.internal.ClientCallImpl`实例并调用其`start`方法，在这个方法内构造了`io.grpc.netty.NettyClientStream`实例并调用其`start`方法，这里就到了writeHeaders的地方：以`:path`为key、以`/+方法全名`为value写入`io.netty.handler.codec.http2.Http2Headers`实例中。
 
 2. 服务端onHeadersRead
 
