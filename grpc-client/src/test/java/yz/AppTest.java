@@ -116,7 +116,7 @@ public class AppTest {
             @Override
             public void onNext(OutputMessage value) {
                 //对返回结果value做处理
-                log.debug("async server streaming call --->>> divide: {}", value);
+                log.debug("async bidi streaming call --->>> divide: {}", value);
                 latch.countDown();
             }
 
