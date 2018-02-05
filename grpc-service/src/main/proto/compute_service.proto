@@ -33,9 +33,11 @@ service ComputeService {
 message InputMessage {
     double numA = 1;
     double numB = 2;
+    string id = 3;
 }
 
 //参数定义
 message OutputMessage {
     double result = 1;
+    string id = 2;
 }

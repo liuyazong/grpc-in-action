@@ -1,0 +1,14 @@
+grpc:
+  server:
+    hostname: 127.0.0.1
+    port: 2018
+    boss:
+      n-threads: 1
+      pool-name: grpc-boss-group
+    worker:
+      n-threads: 20
+      pool-name: grpc-worker-group
+    direct-executor: true
+    interceptors:
+      - yz.grpc.common.server.interceptor.LoggingInterceptor
+      - yz.grpc.common.server.interceptor.SessionInterceptor

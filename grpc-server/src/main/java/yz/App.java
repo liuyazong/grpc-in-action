@@ -6,7 +6,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
-import yz.grpc.server.LoggingInterceptor;
+import yz.grpc.common.server.interceptor.LoggingInterceptor;
+import yz.grpc.common.server.interceptor.SessionInterceptor;
 import yz.grpc.service.impl.ComputeService;
 
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class App {
 
         //服务端interceptor，简单打印请求、响应日志
         builder = builder.intercept(new LoggingInterceptor());
+        builder = builder.intercept(new SessionInterceptor());
 
         Server server = builder
                 .build()

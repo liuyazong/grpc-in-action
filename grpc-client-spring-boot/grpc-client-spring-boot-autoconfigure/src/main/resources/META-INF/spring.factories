@@ -1,0 +1,4 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+yz.grpc.client.autoconfigure.GRpcClientAutoConfiguration,\
+yz.grpc.client.autoconfigure.StubBeanAutoConfiguration

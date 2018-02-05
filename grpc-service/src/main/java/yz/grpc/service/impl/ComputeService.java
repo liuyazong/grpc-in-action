@@ -22,7 +22,7 @@ public class ComputeService extends ComputeServiceGrpc.ComputeServiceImplBase {
                                 BigDecimal.valueOf(request.getNumA())
                                         .add(BigDecimal.valueOf(request.getNumB()))
                                         .setScale(scale, roundingMode).doubleValue()
-                        )
+                        ).setId(request.getId())
                         .build()
         );
         responseObserver.onCompleted();
@@ -31,23 +31,22 @@ public class ComputeService extends ComputeServiceGrpc.ComputeServiceImplBase {
     @Override
     public StreamObserver<InputMessage> subtract(StreamObserver<OutputMessage> responseObserver) {
         return new StreamObserver<InputMessage>() {
+
             @Override
             public void onNext(InputMessage request) {
-                responseObserver.onNext(
-                        OutputMessage
-                                .newBuilder()
-                                .setResult(
-                                        BigDecimal.valueOf(request.getNumA())
-                                                .subtract(BigDecimal.valueOf(request.getNumB()))
-                                                .setScale(scale, roundingMode).doubleValue()
-                                )
-                                .build()
-                );
+                responseObserver.onNext(OutputMessage
+                        .newBuilder()
+                        .setResult(
+                                BigDecimal.valueOf(request.getNumA())
+                                        .subtract(BigDecimal.valueOf(request.getNumB()))
+                                        .setScale(scale, roundingMode).doubleValue()
+                        ).setId(request.getId())
+                        .build());
             }
 
             @Override
             public void onError(Throwable t) {
-                responseObserver.onError(t);
+
             }
 
             @Override
@@ -66,7 +65,7 @@ public class ComputeService extends ComputeServiceGrpc.ComputeServiceImplBase {
                                 BigDecimal.valueOf(request.getNumA())
                                         .multiply(BigDecimal.valueOf(request.getNumB()))
                                         .setScale(scale, roundingMode).doubleValue()
-                        )
+                        ).setId(request.getId())
                         .build()
         );
         responseObserver.onCompleted();
@@ -84,14 +83,13 @@ public class ComputeService extends ComputeServiceGrpc.ComputeServiceImplBase {
                                         BigDecimal.valueOf(request.getNumA())
                                                 .divide(BigDecimal.valueOf(request.getNumB()), scale, roundingMode)
                                                 .doubleValue()
-                                )
+                                ).setId(request.getId())
                                 .build()
                 );
             }
 
             @Override
             public void onError(Throwable t) {
-                responseObserver.onError(t);
             }
 
             @Override
