@@ -32,7 +32,6 @@ public class StubScanner extends ClassPathBeanDefinitionScanner {
         for (BeanDefinitionHolder holder : beanDefinitions) {
             GenericBeanDefinition definition = (GenericBeanDefinition) holder.getBeanDefinition();
             definition.getPropertyValues().add("beanClassName", definition.getBeanClassName());
-            //definition.getPropertyValues().add("channel", applicationContext.getBean(Channel.class));
             definition.getPropertyValues().add("applicationContext", applicationContext);
             definition.setBeanClass(StubFactoryBean.class);
         }

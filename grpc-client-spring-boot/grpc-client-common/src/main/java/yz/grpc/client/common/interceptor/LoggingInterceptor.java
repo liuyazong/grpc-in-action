@@ -1,4 +1,4 @@
-package yz.grpc.common.client.interceptor;
+package yz.grpc.client.common.interceptor;
 
 import io.grpc.*;
 import lombok.extern.slf4j.Slf4j;

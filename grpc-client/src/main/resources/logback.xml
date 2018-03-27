@@ -26,7 +26,7 @@
     </appender>
 
     <logger name="io.netty" level="ERROR"/>
-    <logger name="io.grpc" level="ERROR"/>
+    <logger name="io.grpc" level="DEBUG"/>
 
     <logger name="yz.grpc.client" level="DEBUG"/>
 

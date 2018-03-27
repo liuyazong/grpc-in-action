@@ -38,78 +38,79 @@ public class ClientDemoAppTest {
 
     @Test
     public void simple() {
-        OutputMessage outputMessage = computeServiceBlockingStub.add(InputMessage.newBuilder().setNumA(new Random().nextInt(100)).setNumB(new Random().nextInt(100)).setId(UUID.randomUUID().toString()).build());
+        OutputMessage outputMessage = computeServiceBlockingStub.add(InputMessage
+                .newBuilder()
+                .setNumA(new Random().nextInt(100))
+                .setNumB(new Random().nextInt(100))
+                .setId(UUID.randomUUID().toString())
+                .build());
+
+        log.debug("simple: \n{}", outputMessage);
+
+        outputMessage = computeServiceBlockingStub.add(InputMessage
+                .newBuilder()
+                .setNumA(new Random().nextInt(111))
+                .setNumB(new Random().nextInt(111))
+                .setId(UUID.randomUUID().toString())
+                .build());
+
+        log.debug("simple: \n{}", outputMessage);
     }
 
     @Test
     public void clientStream() throws InterruptedException, ExecutionException {
         mStreamObserver<OutputMessage> streamObserver = new mStreamObserver<>();
         StreamObserver<InputMessage> subtract = computeServiceStub.subtract(streamObserver);
-
-        subtract.onNext(InputMessage.newBuilder().setNumA(new Random().nextInt(100)).setNumB(new Random().nextInt(100)).setId(UUID.randomUUID().toString()).build());
+        subtract.onNext(InputMessage
+                .newBuilder()
+                .setNumA(new Random().nextInt(100))
+                .setNumB(new Random().nextInt(100))
+                .setId(UUID.randomUUID().toString())
+                .build());
         subtract.onCompleted();
-
         OutputMessage outputMessage = streamObserver.get();
+        log.debug("client stream: \n{}", outputMessage);
     }
 
     @Test
     public void serverStream() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        computeServiceStub.multiply(InputMessage.newBuilder().setNumA(new Random().nextInt(100)).setNumB(new Random().nextInt(100)).setId(UUID.randomUUID().toString()).build(),
-                new StreamObserver<OutputMessage>() {
-                    @Override
-                    public void onNext(OutputMessage value) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-
-                    }
-
-                    @Override
-                    public void onCompleted() {
-                        countDownLatch.countDown();
-                    }
-                });
-
-        countDownLatch.await();
+        mStreamObserver<OutputMessage> responseObserver = new mStreamObserver<>();
+        computeServiceStub.multiply(InputMessage.
+                        newBuilder()
+                        .setNumA(new Random().nextInt(100))
+                        .setNumB(new Random().nextInt(100))
+                        .setId(UUID.randomUUID().toString())
+                        .build(),
+                responseObserver);
+        OutputMessage outputMessage = responseObserver.get();
+        log.debug("server stream: \n{}", outputMessage);
     }
 
     @Test
-    public void biStream() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        StreamObserver<InputMessage> divide = computeServiceStub.divide(new StreamObserver<OutputMessage>() {
-            @Override
-            public void onNext(OutputMessage value) {
-
-            }
-
-            @Override
-            public void onError(Throwable t) {
-
-            }
-
-            @Override
-            public void onCompleted() {
-                countDownLatch.countDown();
-            }
-        });
+    public void bidiStream() throws InterruptedException {
+        mStreamObserver<OutputMessage> responseObserver = new mStreamObserver<>();
+        StreamObserver<InputMessage> divide = computeServiceStub.divide(responseObserver);
 
         divide.onNext(InputMessage.newBuilder().setNumA(new Random().nextInt(100)).setNumB(new Random().nextInt(100)).setId(UUID.randomUUID().toString()).build());
         divide.onNext(InputMessage.newBuilder().setNumA(new Random().nextInt(100)).setNumB(new Random().nextInt(100)).setId(UUID.randomUUID().toString()).build());
         divide.onCompleted();
-        countDownLatch.await();
+        OutputMessage outputMessage = responseObserver.get();
+        log.debug("bidi stream: \n{}", outputMessage);
+        outputMessage = responseObserver.get();
+        log.debug("bidi stream: \n{}", outputMessage);
     }
 
     @Test
     public void futureStream() throws ExecutionException, InterruptedException {
         OutputMessage outputMessage = computeServiceFutureStub.add(InputMessage.newBuilder().setNumA(new Random().nextInt(100)).setNumB(new Random().nextInt(100)).setId(UUID.randomUUID().toString()).build()).get();
+        log.debug("future stream: \n{}", outputMessage);
     }
 }
 
 class mStreamObserver<V> implements StreamObserver<V>, Future<V> {
+
     private CountDownLatch countDownLatch = new CountDownLatch(1);
+
     private V v;
 
     @Override

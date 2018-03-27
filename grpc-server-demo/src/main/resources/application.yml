@@ -10,5 +10,5 @@ grpc:
       pool-name: grpc-worker-group
     direct-executor: true
     interceptors:
-      - yz.grpc.common.server.interceptor.LoggingInterceptor
-      - yz.grpc.common.server.interceptor.SessionInterceptor
+      - yz.grpc.server.common.interceptor.LoggingInterceptor
+      - yz.grpc.server.common.interceptor.SessionInterceptor

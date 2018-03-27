@@ -6,8 +6,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
-import yz.grpc.common.server.interceptor.LoggingInterceptor;
-import yz.grpc.common.server.interceptor.SessionInterceptor;
+import yz.grpc.server.common.interceptor.LoggingInterceptor;
+import yz.grpc.server.common.interceptor.SessionInterceptor;
 import yz.grpc.service.impl.ComputeService;
 
 import java.io.IOException;

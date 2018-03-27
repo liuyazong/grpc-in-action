@@ -10,8 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
-import yz.grpc.common.client.interceptor.LoggingInterceptor;
-import yz.grpc.common.client.interceptor.SessionInterceptor;
+import yz.grpc.client.common.interceptor.LoggingInterceptor;
+import yz.grpc.client.common.interceptor.SessionInterceptor;
 
 @Slf4j
 public class ChannelFactory extends BaseKeyedPooledObjectFactory<ObjectKey, ManagedChannel> {
