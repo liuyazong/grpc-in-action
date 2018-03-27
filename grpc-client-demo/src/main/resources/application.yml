@@ -1,7 +1,15 @@
 grpc:
   client:
-    hostname: 127.0.0.1
-    port: 2018
+    hostname: yz
+    port: 8443
+    ssl:
+      enabled: true
+      key-cert-chain: client.crt
+      key: client.pk8
+      trust-manager: ca.crt
+      client-auth: REQUIRE
+      ssl-provider: OPENSSL
+
     worker:
       n-threads: 15
       pool-name: grpc-worker-group

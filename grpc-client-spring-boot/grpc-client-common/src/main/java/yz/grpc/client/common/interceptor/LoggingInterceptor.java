@@ -11,7 +11,7 @@ public class LoggingInterceptor implements ClientInterceptor {
             @Override
             public void sendMessage(ReqT message) {
                 super.sendMessage(message);
-                log.debug("client send message: \n{}", message);
+                log.debug("sendMessage: \n{}", message);
             }
 
             @Override
@@ -20,7 +20,7 @@ public class LoggingInterceptor implements ClientInterceptor {
                     @Override
                     public void onMessage(RespT message) {
                         super.onMessage(message);
-                        log.debug("client received message: \n{}", message);
+                        log.debug("onMessage: \n{}", message);
                     }
                 }, headers);
             }

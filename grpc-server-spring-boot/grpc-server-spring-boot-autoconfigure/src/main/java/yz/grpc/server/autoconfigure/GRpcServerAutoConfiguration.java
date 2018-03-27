@@ -4,9 +4,13 @@ import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerInterceptor;
+import io.grpc.netty.GrpcSslContexts;
 import io.grpc.netty.NettyServerBuilder;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -16,6 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.InetSocketAddress;
@@ -29,28 +34,46 @@ public class GRpcServerAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(value = {NettyServerBuilder.class})
     public NettyServerBuilder serverBuilder(GRpcServerProperties properties,
-                                            ApplicationContext applicationContext) {
+                                            ApplicationContext applicationContext) throws SSLException {
         log.debug("server properties: {}", properties);
         NettyServerBuilder builder = NettyServerBuilder
                 .forAddress(new InetSocketAddress(properties.getHostname(), properties.getPort()))
+                .channelType(NioServerSocketChannel.class)
                 .bossEventLoopGroup(new NioEventLoopGroup(properties.getBoss().getnThreads(), new DefaultThreadFactory(properties.getBoss().getPoolName())))
                 .workerEventLoopGroup(new NioEventLoopGroup(properties.getWorker().getnThreads(), new DefaultThreadFactory(properties.getWorker().getPoolName())));
+
+        GRpcServerProperties.Ssl ssl = properties.getSsl();
+        if (null != ssl && ssl.isEnabled()) {
+            SslContext sslContext = GrpcSslContexts
+                    .configure(
+                            SslContextBuilder
+                                    .forServer(
+                                            GRpcServerAutoConfiguration.class.getClassLoader().getResourceAsStream(ssl.getKeyCertChain()),
+                                            GRpcServerAutoConfiguration.class.getClassLoader().getResourceAsStream(ssl.getKey())
+                                    )
+                                    .trustManager(GRpcServerAutoConfiguration.class.getClassLoader().getResourceAsStream(ssl.getTrustManager()))
+                                    .clientAuth(ssl.getClientAuth())
+                                    .sslProvider(ssl.getSslProvider()))
+                    .build();
+            builder.sslContext(sslContext);
+        } else {
+
+        }
 
         if (properties.getDirectExecutor()) {
             builder = builder.directExecutor();
         }
 
-        String[] interceptors = properties.getInterceptors();
+        Class<? extends ServerInterceptor>[] interceptors = properties.getInterceptors();
         if (null != interceptors && interceptors.length > 0) {
-            for (String interceptor : interceptors)
+            for (Class<? extends ServerInterceptor> interceptor : interceptors)
                 try {
-                    @SuppressWarnings("unchecked")
-                    Class<? extends ServerInterceptor> aClass = (Class<? extends ServerInterceptor>) Class.forName(interceptor);
-                    Constructor<? extends ServerInterceptor> constructor = aClass.getDeclaredConstructor();
+                    Constructor<? extends ServerInterceptor> constructor = interceptor.getDeclaredConstructor();
                     ServerInterceptor serverInterceptor = constructor.newInstance();
                     builder = builder.intercept(serverInterceptor);
                     log.debug("add interceptor: {}", serverInterceptor);
                 } catch (Exception e) {
+                    log.error("error",e);
                 }
         }
         String[] beanNamesForType = applicationContext.getBeanNamesForType(BindableService.class);

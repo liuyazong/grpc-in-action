@@ -12,13 +12,13 @@ public class LoggingInterceptor implements ServerInterceptor {
             @Override
             public void sendMessage(RespT message) {
                 super.sendMessage(message);
-                log.debug("server send message: \n{}", message);
+                log.debug("sendMessage: \n{}", message);
             }
         }, headers)) {
             @Override
             public void onMessage(ReqT message) {
                 super.onMessage(message);
-                log.debug("server received message: \n{}", message);
+                log.debug("onMessage: \n{}", message);
             }
         };
     }

@@ -47,14 +47,14 @@ public class ClientDemoAppTest {
 
         log.debug("simple: \n{}", outputMessage);
 
-        outputMessage = computeServiceBlockingStub.add(InputMessage
+        /*outputMessage = computeServiceBlockingStub.add(InputMessage
                 .newBuilder()
                 .setNumA(new Random().nextInt(111))
                 .setNumB(new Random().nextInt(111))
                 .setId(UUID.randomUUID().toString())
                 .build());
 
-        log.debug("simple: \n{}", outputMessage);
+        log.debug("simple: \n{}", outputMessage);*/
     }
 
     @Test

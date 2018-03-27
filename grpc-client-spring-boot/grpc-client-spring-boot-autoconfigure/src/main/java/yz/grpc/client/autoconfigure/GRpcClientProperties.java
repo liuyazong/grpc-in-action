@@ -1,5 +1,8 @@
 package yz.grpc.client.autoconfigure;
 
+import io.grpc.ClientInterceptor;
+import io.netty.handler.ssl.ClientAuth;
+import io.netty.handler.ssl.SslProvider;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -13,11 +16,23 @@ public class GRpcClientProperties {
     private String hostname = "localhost";
     private Integer port = 2018;
 
+    private Ssl ssl;
+
     @NestedConfigurationProperty
     private Group worker = new Group(1, "grpc-worker-group");
 
     private Boolean directExecutor = Boolean.TRUE;
-    private String[] interceptors;
+    private Class<? extends ClientInterceptor>[] interceptors;
+
+    @Data
+    public static class Ssl {
+        private boolean enabled = false;
+        private String keyCertChain;
+        private String key;
+        private String trustManager;
+        private ClientAuth clientAuth;
+        private SslProvider sslProvider;
+    }
 
     public static class Group {
         private Integer nThreads;

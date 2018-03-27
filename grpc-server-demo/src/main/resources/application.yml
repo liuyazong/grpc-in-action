@@ -1,7 +1,14 @@
 grpc:
   server:
-    hostname: 127.0.0.1
-    port: 2018
+    hostname: localhost
+    port: 8443
+    ssl:
+      enabled: true
+      key-cert-chain: server.crt
+      key: server.pk8
+      trust-manager: ca.crt
+      client-auth: REQUIRE
+      ssl-provider: OPENSSL
     boss:
       n-threads: 1
       pool-name: grpc-boss-group

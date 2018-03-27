@@ -16,6 +16,7 @@ public class SessionInterceptor implements ServerInterceptor {
                 log.debug("sendHeaders: {}", headers);
                 super.sendHeaders(headers);
             }
+
         }, headers)) {
 
         };
