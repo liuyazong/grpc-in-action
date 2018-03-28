@@ -28,7 +28,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <grpc.version>1.10.0</grpc.version>
+        <grpc.version>1.10.1</grpc.version>
         <protoc.version>3.5.1</protoc.version>
         <testng.version>6.13.1</testng.version>
         <commons-lang3.version>3.7</commons-lang3.version>
@@ -98,12 +98,6 @@
             <dependency>
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-stub</artifactId>
-                <version>${grpc.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-auth</artifactId>
                 <version>${grpc.version}</version>
                 <optional>true</optional>
             </dependency>

@@ -90,6 +90,7 @@ public class ComputeService extends ComputeServiceGrpc.ComputeServiceImplBase {
 
             @Override
             public void onError(Throwable t) {
+                responseObserver.onError(t);
             }
 
             @Override
