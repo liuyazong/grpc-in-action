@@ -106,7 +106,7 @@
 
 2. 接下来调用`io.grpc.netty.NettyServerBuilder`的`build`方法，该方法调用构造器`ServerImpl(AbstractServerImplBuilder<?> builder,InternalServer transportServer,Context rootContext)`返回`io.grpc.Server`实例。该构造函数调用`builder`参数的`build`方法将`java.util.LinkedHashMap`中方key、value封装为`io.grpc.internal.InternalHandlerRegistry`实例并赋值给`io.grpc.internal.ServerImpl`的`io.grpc.internal.InternalHandlerRegistry`属性。参数`transportServer`由`io.grpc.netty.NettyServerBuilder`的`io.grpc.netty.NettyServerBuilder.buildTransportServer`方法构建，实际上它是一个`io.grpc.netty.NettyServer`的实例。
 
-3. 接下来看`io.grpc.internal.ServerImpl`的`start`方法，其内部调用了`io.grpc.netty.NettyServer`的`start`方法，这里才开始netty server的配置及启动。这里中点关注`io.netty.bootstrap.ServerBootstrap.childHandler(io.netty.channel.ChannelHandler)`方法，在`io.grpc.netty.NettyServerTransport`的`start`方法内对`io.grpc.netty.NettyServerHandler`进行实例化并把该实例添加到netty的channel链中。
+3. 接下来看`io.grpc.internal.ServerImpl`的`start`方法，其内部调用了`io.grpc.netty.NettyServer`的`start`方法，这里才开始netty server的配置及启动。这里重点关注`io.netty.bootstrap.ServerBootstrap.childHandler(io.netty.channel.ChannelHandler)`方法，在`io.grpc.netty.NettyServerTransport`的`start`方法内对`io.grpc.netty.NettyServerHandler`进行实例化并把该实例添加到netty的channel链中。
 
 ### 客户端
 
